@@ -1,13 +1,17 @@
 import fastapi
+from prometheus_fastapi_instrumentator import Instrumentator
+
 from painting_estimation.settings import settings
-from painting_estimation import models
 
+
+INSTRUMENTATOR: Instrumentator = Instrumentator()
 APP: fastapi.FastAPI = fastapi.FastAPI(debug=settings.debug)
+INSTRUMENTATOR.instrument(APP)
 
 
-@APP.get("/metrics", response_model=models.Metrics)
-async def metrics():
-    return models.Metrics(is_alive=True)
+@APP.on_event("startup")
+async def _startup():
+    INSTRUMENTATOR.expose(APP)
 
 
 @APP.post("/predict")
