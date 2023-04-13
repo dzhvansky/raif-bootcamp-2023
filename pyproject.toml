@@ -6,8 +6,6 @@ authors = ["RBRU team #3"]
 
 [tool.poetry.dependencies]
 python = "^3.10,<3.11"
-fastapi = "*"
-python-telegram-bot = "*"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.0"
@@ -58,7 +56,23 @@ addopts = [
     [tool.pylint.master]
     fail-under = 9
     good-names-rgxs="^[_a-z][_a-z0-9]?$"
-    extension-pkg-whitelist = ["math", "numpy"]
+    extension-pkg-whitelist = ["math", "numpy", "pydantic"]
+    disable = [
+      "raw-checker-failed",
+      "bad-inline-option",
+      "locally-disabled",
+      "file-ignored",
+      "suppressed-message",
+      "useless-suppression",
+      "deprecated-pragma",
+      "use-symbolic-message-instead",
+      "too-few-public-methods",
+      "logging-fstring-interpolation",
+      "logging-format-interpolation",
+      'missing-module-docstring',
+      'missing-class-docstring',
+      'missing-function-docstring',
+  ]
     [tool.pylint."FORMAT"]
     max-line-length = 120
 
