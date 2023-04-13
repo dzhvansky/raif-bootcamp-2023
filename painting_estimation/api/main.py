@@ -3,6 +3,7 @@ import logging
 import fastapi
 from prometheus_fastapi_instrumentator import Instrumentator
 
+from painting_estimation import models
 from painting_estimation.settings import settings
 
 
@@ -13,11 +14,11 @@ INSTRUMENTATOR.instrument(APP)
 
 
 @APP.on_event("startup")
-async def _startup():
+async def _():
     INSTRUMENTATOR.expose(APP)
 
 
 @APP.post("/predict")
 async def predict(file: fastapi.UploadFile):
     LOGGER.info(f"Got image `{file.filename}` with type `{file.content_type}`")
-    return {"price": 666}
+    return models.Predict(price=2500)
