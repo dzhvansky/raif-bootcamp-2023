@@ -6,6 +6,8 @@ authors = ["RBRU team #3"]
 
 [tool.poetry.dependencies]
 python = "^3.10,<3.11"
+fastapi = "*"
+python-telegram-bot = "*"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.0"
