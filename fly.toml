@@ -7,6 +7,10 @@ mounts = []
 primary_region = "ams"
 processes = []
 
+[metrics]
+port = 8000
+path = "/metrics"
+
 [[services]]
   internal_port = 8000
   processes = ["app"]
