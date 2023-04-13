@@ -1,5 +1,3 @@
-import typing
-
 from fastapi.testclient import TestClient
 
 
