@@ -1,9 +1,9 @@
 version: "3.0"
 services:
   api:
-    image: bootcamp-api:latest
+    image: bootcamp:latest
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.api
     ports:
       - 8000:8000
     volumes:
@@ -13,3 +13,18 @@ services:
       - /tmp
       - /var/run
     restart: always
+    command: /srv/www/bin/scripts/run-api-dev.sh
+
+  bot:
+    image: bootcamp:latest
+    environment:
+      - ML_API="http://api/predict"
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+    volumes:
+      - ./:/srv/www/:delegated
+    tmpfs:
+      - /run
+      - /tmp
+      - /var/run
+    restart: always
+    command: /srv/www/bin/app/run-bot.sh

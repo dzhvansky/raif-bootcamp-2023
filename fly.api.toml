@@ -7,6 +7,9 @@ mounts = []
 primary_region = "ams"
 processes = []
 
+[build]
+dockerfile = "Dockerfile.api"
+
 [metrics]
 port = 8000
 path = "/metrics"

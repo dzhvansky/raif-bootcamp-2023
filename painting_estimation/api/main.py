@@ -18,7 +18,7 @@ async def _():
     INSTRUMENTATOR.expose(APP)
 
 
-@APP.post("/predict")
+@APP.post("/predict", response_model=models.Predict)
 async def predict(file: fastapi.UploadFile):
     LOGGER.info(f"Got image `{file.filename}` with type `{file.content_type}`")
     return models.Predict(price=2500)
