@@ -7,8 +7,8 @@ mounts = []
 primary_region = "ams"
 processes = []
 
-[build.args]
-EXECUTABLE="run-api.sh"
+[build]
+dockerfile = "Dockerfile.api"
 
 [metrics]
 port = 8000
