@@ -2,7 +2,7 @@
 name = "painting_estimation"
 version = "0.1.0"
 description = "ML service for painting value estimation"
-authors = ["RBRU team #3"]
+authors = ["RBRU team3 <nicepeoplefrom@raiffeisen.ru>"]
 
 [tool.poetry.dependencies]
 python = "^3.10,<3.11"
