@@ -21,7 +21,7 @@ FROM scratch AS runtime-image
 
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \
     LANG="C.UTF-8" \
-    PYTHON_VERSION=3.11.1 \
+    PYTHON_VERSION=3.10.8 \
     PYTHONUNBUFFERED=1 \
     WORKDIR=/srv/www/
 WORKDIR $WORKDIR
