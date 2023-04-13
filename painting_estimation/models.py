@@ -1,5 +1,5 @@
 import pydantic
 
 
-class Metrics(pydantic.BaseModel):
-    is_alive: bool = True
+class Predict(pydantic.BaseModel):
+    price: float = 2500
