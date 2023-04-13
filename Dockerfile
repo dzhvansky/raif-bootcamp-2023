@@ -30,5 +30,6 @@ COPY --from=compile-image / /
 COPY . .
 
 RUN chown python:python /srv -R
-CMD ["/srv/www/bin/app/run.sh"]
+EXPOSE 8000
 USER python:python
+CMD ["/srv/www/bin/app/run.sh"]

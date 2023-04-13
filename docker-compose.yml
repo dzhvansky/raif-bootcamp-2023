@@ -1,0 +1,15 @@
+version: "3.0"
+services:
+  api:
+    image: bootcamp-api:latest
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - ./:/srv/www/:delegated
+    tmpfs:
+      - /run
+      - /tmp
+      - /var/run
+    restart: always
