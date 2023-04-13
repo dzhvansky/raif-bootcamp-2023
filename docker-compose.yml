@@ -13,7 +13,7 @@ services:
       - /tmp
       - /var/run
     restart: always
-    command: ./bin/scripts/run-api.sh
+    command: /srv/www/bin/scripts/run-api-dev.sh
 
   bot:
     image: bootcamp:latest
@@ -27,4 +27,4 @@ services:
       - /tmp
       - /var/run
     restart: always
-    command: ./bin/scripts/run-bot.sh
+    command: /srv/www/bin/app/run-bot.sh

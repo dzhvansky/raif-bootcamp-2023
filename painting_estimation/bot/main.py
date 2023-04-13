@@ -16,6 +16,7 @@ HTTP_CLIENT: httpx.AsyncClient = httpx.AsyncClient()
 
 
 async def fetch_price(image: telegram.File) -> models.Predict:
+    LOGGER.info(f"Making prediction request to {settings.ml_api}")
     with io.BytesIO() as io_target:
         await image.download_to_memory(io_target)
         io_target.seek(0)
