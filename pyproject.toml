@@ -59,6 +59,8 @@ addopts = [
     "--cov-report=xml:./coverage.xml",
     "--cov=./painting_estimation",
 ]
+log_cli = true
+log_cli_level = "DEBUG"
 
 [tool.pylint]
     [tool.pylint.master]
