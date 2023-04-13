@@ -24,7 +24,7 @@ ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \
     PYTHON_VERSION=3.10.8 \
     PYTHONUNBUFFERED=1 \
     WORKDIR=/srv/www/\
-    PYHTONPATH=/srv/www
+    PYTHONPATH=/srv/www
 WORKDIR $WORKDIR
 
 COPY --from=compile-image / /
