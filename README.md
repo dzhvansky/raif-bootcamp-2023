@@ -29,5 +29,5 @@ or tag a commit with some version in format `v*.*.*` (for ex. `v1.0.1`) and let 
 
 or force deployment manually:
 1. go to https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml
-2. press "..." button and click "Run workflow"
+2. Press "Run workflow" button and actually run it
 
