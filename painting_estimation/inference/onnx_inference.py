@@ -4,8 +4,6 @@ import typing
 import numpy as np
 import onnxruntime
 
-from painting_estimation.models import Predict
-
 
 class PreprocessorProtocol(typing.Protocol):
     def __call__(self, image: np.ndarray) -> np.ndarray:
@@ -59,11 +57,10 @@ class EnsembleServing:
         self.models = models
         self.aggregator = aggregator
 
-    def __call__(self, image: np.ndarray, add_source_image: bool = False) -> Predict:
+    def __call__(self, image: np.ndarray, add_source_image: bool = False) -> float:
         outputs = {name: model(image) for name, model in self.models.items()}
         if add_source_image:
             outputs.update({"image": image})
 
         price: float = self.aggregator(outputs)
-
-        return Predict(price=price)
+        return price
