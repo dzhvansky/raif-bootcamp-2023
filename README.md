@@ -20,3 +20,7 @@ Deployed API (docs): https://velvet-wolves-art-expert-api.fly.dev/docs
 To deploy manually:
 1. install flyctl: `brew install flyctl`
 2. run `fly deploy`
+
+or tag a commit with some version in format `v*.*.*` (for ex. `v1.0.1`) and let CI/CD do its work:
+1. `git tag v1.0.1`
+2. `git push --tags`
