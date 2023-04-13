@@ -57,3 +57,6 @@ env/*.env
 
 # Mac OS-specific storage files
 .DS_Store
+
+# poetry lock for now
+poetry.lock
