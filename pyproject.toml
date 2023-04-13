@@ -11,6 +11,9 @@ python-telegram-bot = "*"
 uvicorn = "*"
 gunicorn = "*"
 python-multipart = "*"
+mlem = "*"
+prometheus-client = "*"
+prometheus-fastapi-instrumentator = "*"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.0"
