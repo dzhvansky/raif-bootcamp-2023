@@ -7,6 +7,9 @@ mounts = []
 primary_region = "ams"
 processes = []
 
+[build.args]
+EXECUTABLE="run-api.sh"
+
 [metrics]
 port = 8000
 path = "/metrics"

@@ -1,21 +1,19 @@
-# fly.toml file generated for art-expert on 2023-01-14T21:03:20+06:00
+# fly.toml file generated for velvet-wolves-art-expert-bot on 2023-04-13T23:20:28+03:00
 
-app = "art-expert"
+app = "velvet-wolves-art-expert-bot"
 kill_signal = "SIGINT"
 kill_timeout = 5
+mounts = []
+primary_region = "ams"
 processes = []
 
-[env]
-
-[experimental]
-  auto_rollback = true
+[build.args]
+EXECUTABLE="run-bot.sh"
 
 [[services]]
-  http_checks = []
-  internal_port = 8080
+  internal_port = 8000
   processes = ["app"]
   protocol = "tcp"
-  script_checks = []
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
@@ -29,9 +27,3 @@ processes = []
   [[services.ports]]
     handlers = ["tls", "http"]
     port = 443
-
-  [[services.tcp_checks]]
-    grace_period = "1s"
-    interval = "15s"
-    restart_limit = 0
-    timeout = "2s"

@@ -1,5 +1,7 @@
 FROM python:3.10 as compile-image
 
+ARG EXECUTABLE="run-api.sh"
+
 RUN groupadd --gid 2000 python
 RUN useradd --uid 2000 --gid python --shell /usr/sbin/nologin --create-home python
 
@@ -33,4 +35,4 @@ COPY . .
 RUN chown python:python /srv -R
 EXPOSE 8000
 USER python:python
-CMD ["/srv/www/bin/app/run.sh"]
+CMD ["/srv/www/bin/app/${EXECUTABLE}"]
