@@ -6,7 +6,8 @@ RUN useradd --uid 2000 --gid python --shell /usr/sbin/nologin --create-home pyth
 RUN apt-get update
 
 COPY pyproject* ./
-COPY poetry.lock ./
+# Uncomment before review
+# COPY poetry.lock ./
 
 RUN pip install poetry
 RUN poetry config virtualenvs.create false
