@@ -31,3 +31,8 @@ or force deployment manually:
 1. go to https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml
 2. Press "Run workflow" button and actually run it
 
+# Bot
+
+To deploy locally:
+1. `export TELEGRAM_TOKEN=...`
+2. `poetry run python ./painting_estimation/bot/bot.py`

@@ -24,11 +24,9 @@ class HTTPClient:
             return f"{prefix}{self.host}:{self.port}"
         return f"{prefix}{self.host}"
 
-    def __call__(self, name: str, files: dict[str, bytes], return_raw: bool = False):  # pylint: disable=R1710
-        # headers = {
-        #     'content-type': 'application/json',
-        # }
-        ret = requests.post(f"{self.base_url}/{name}/", files=files, allow_redirects=True)
+    def __call__(self, name: str, file_bytes: bytes, return_raw: bool = False):  # pylint: disable=R1710
+
+        ret = requests.post(f"{self.base_url}/{name}", files={"file": file_bytes})
         if ret.status_code == 200:  # pylint: disable=R1705
             if return_raw:
                 return ret.content

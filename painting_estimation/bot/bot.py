@@ -33,9 +33,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def estimate_price(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     update.message.from_user
     photo_file = await update.message.photo[-1].get_file()
-    await photo_file.download_to_drive("user_image.jpg")
-    print("!!!!", pathlib.Path("user_image.jpg").is_file())
-    res = client("predict", files={"file": pathlib.Path("user_image.jpg").read_bytes()})
+    await photo_file.download_to_drive(TEMP_IMAGE_FILE)
+
+    res = client("predict", file_bytes=pathlib.Path(TEMP_IMAGE_FILE).read_bytes())
 
     pic_name = UNKNOWN_PIC_NAME
     caption = f"""Original Title: {np.random.choice(["Unknown", pic_name])}
@@ -52,10 +52,7 @@ Similar painting: https://www.sothebys.com/en/buy/fine-art/paintings/abstract/_e
 
     await update.message.reply_photo(
         update.message.photo[-1].file_id,
-        caption=caption.format(
-            price=res["go"],
-            author=update.effective_user.full_name,
-        ),
+        caption=caption.format(price=res["price"], author=update.effective_user.full_name),
     )
 
 
