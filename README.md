@@ -1,5 +1,7 @@
 # Raiffeisen bootcamp 2023 - Telegram bot for painting value estimation
 
+Deployed API (docs): https://velvet-wolves-art-expert-api.fly.dev/docs
+
 # Quickstart
 
 1. `poetry install`
