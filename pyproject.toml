@@ -14,12 +14,16 @@ python-multipart = "*"
 mlem = {version = "*", extras = ["flyio"]}
 prometheus-client = "*"
 prometheus-fastapi-instrumentator = "*"
+opencv-python = "*"
+pillow = "*"
+onnxruntime = "*"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.0"
 matplotlib = "^3.0"
 seaborn = "^0.12"
 ipywidgets = "^8.0"
+tqdm = "*"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.0"
