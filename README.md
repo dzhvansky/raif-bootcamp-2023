@@ -1,3 +1,5 @@
+[![Fly Deploy](https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml/badge.svg)](https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml)
+
 # Raiffeisen bootcamp 2023 - Telegram bot for painting value estimation
 
 Deployed API (docs): https://velvet-wolves-art-expert-api.fly.dev/docs
@@ -24,3 +26,8 @@ To deploy manually:
 or tag a commit with some version in format `v*.*.*` (for ex. `v1.0.1`) and let CI/CD do its work:
 1. `git tag v1.0.1`
 2. `git push --tags`
+
+or force deployment manually:
+1. go to https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml
+2. press "..." button and click "Run workflow"
+
