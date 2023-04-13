@@ -1,4 +1,4 @@
-[![Fly Deploy](https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml/badge.svg)](https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml)
+[![build](https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml/badge.svg)](https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml) [![python](https://img.shields.io/badge/Python-3.10-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![FastAPI](https://img.shields.io/badge/FastAPI-0.95.0-009688.svg?style=flat&logo=FastAPI&logoColor=white)](https://fastapi.tiangolo.com)
 
 # Raiffeisen bootcamp 2023 - Telegram bot for painting value estimation
 
