@@ -5,7 +5,7 @@ description = "ML service for painting value estimation"
 authors = ["RBRU team #3"]
 
 [tool.poetry.dependencies]
-python = "^3.8,<3.9"
+python = "^3.10,<3.11"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.0"
@@ -21,12 +21,12 @@ mypy = "^1.0"
 pylint = "^2.15.6"
 
 [tool.poetry.group.format.dependencies]
-black = "^22.8.0"
+black = "^22.0"
 autoflake ="^1.4"
 docformatter ="^1.4"
-isort ="^5.10.1"
-pyupgrade ="^2.32.1"
-pybetter ="^0.4.1"
+isort ="^5.0"
+pyupgrade ="^2.0"
+pybetter ="^0.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
