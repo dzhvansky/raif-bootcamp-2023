@@ -3,18 +3,19 @@ import pathlib
 import joblib
 import numpy as np
 
-from painting_estimation.images.preprocessing import ImagePreprocessor
-from painting_estimation.images.utils import ImgSize
+from painting_estimation.images.preprocessing import ImagePreprocessor, ImgSize
 from painting_estimation.inference.inference import ModelServing, ONNXModel
 
 
-MODELS_DIR = pathlib.Path(__file__).parent.parent / "data/models/1/"
+MODELS_DIR = pathlib.Path(__file__).parents[2] / "models/1/"
 
 
-MODEL = ONNXModel(str(MODELS_DIR / "incept_v3_1.onnx"))
-PREPROCESSOR = ImagePreprocessor(
-    target_size=ImgSize(width=299, height=299), target_dim_order=(0, 1, 2), target_dtype=np.float32
-)
+def preprocessor(image: np.ndarray) -> np.ndarray:
+    preproc = ImagePreprocessor(
+        target_size=ImgSize(width=299, height=299), target_dim_order=(0, 1, 2), target_dtype=np.float32
+    )
+    image = preproc(image)
+    return image
 
 
 def postprocessor(nn_output: np.ndarray) -> float:
@@ -25,7 +26,7 @@ def postprocessor(nn_output: np.ndarray) -> float:
 
 
 FIRST_SERVING: ModelServing = ModelServing(
-    model=MODEL,
-    preprocessor=PREPROCESSOR,
+    model=ONNXModel(str(MODELS_DIR / "incept_v3_1.onnx")),
+    preprocessor=preprocessor,
     postprocessor=postprocessor,
 )
