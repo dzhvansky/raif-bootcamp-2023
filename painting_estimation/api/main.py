@@ -1,4 +1,3 @@
-import io
 import logging
 
 import fastapi
@@ -23,9 +22,5 @@ async def _():
 @APP.post("/predict", response_model=models.Predict)
 async def predict(file: fastapi.UploadFile):
     LOGGER.info(f"Got image `{file.filename}` with type `{file.content_type}`")
-
-    if not isinstance(file.file, io.BytesIO):
-        raise ValueError(f"Unexpected IO type: only `io.BytesIO` is allowed, got {type(file.file)}.")
-
-    price: float = predict_painting_price(byte_io=file.file)
+    price: float = predict_painting_price(byte_io=file.file)  # type: ignore
     return models.Predict(price=price)

@@ -19,7 +19,12 @@ pillow = "*"
 onnxruntime = "*"
 joblib = "^1.2.0"
 lightgbm = "^3.3.5"
+torch = {version = "*", optional = true }
+torchmetrics = {version = "*", optional = true }
+torchvision = {version = "*", optional = true }
 
+[tool.poetry.extras]
+torch = ["torch", "torchvision", "torchmetrics"]
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.0"

@@ -60,4 +60,4 @@ env/*.env
 .DS_Store
 
 # poetry lock for now
-poetry.lock
+#poetry.lock
