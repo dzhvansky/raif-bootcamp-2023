@@ -1,6 +1,6 @@
 # https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
 
-name: Fly Deploy - API
+name: Fly Deploy - BOT
 on:
   workflow_dispatch:
   push:
@@ -16,6 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --config fly.api.toml --remote-only
+      - run: flyctl deploy --config fly.bot.toml --remote-only
         env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          FLY_API_TOKEN: ${{ secrets.FLY_BOT_TOKEN }}
