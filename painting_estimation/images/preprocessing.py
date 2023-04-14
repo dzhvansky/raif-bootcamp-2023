@@ -16,9 +16,9 @@ def image_size(img: np.ndarray) -> ImgSize:
     return ImgSize(width=width, height=height)
 
 
-def cv2_image_from_bytes(byte_image: bytes) -> np.ndarray:
-    pil_image: Image = Image.open(io.BytesIO(byte_image)).convert("RGB")
-    return np.asarray(pil_image)
+def cv2_image_from_byte_io(byte_io: io.BytesIO) -> np.ndarray:
+    pil_image: Image = Image.open(byte_io).convert("RGB")
+    return np.asarray(pil_image, dtype=np.uint8)
 
 
 class ImagePreprocessor:
