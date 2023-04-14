@@ -4,6 +4,7 @@ RUN groupadd --gid 2000 python
 RUN useradd --uid 2000 --gid python --shell /usr/sbin/nologin --create-home python
 
 RUN apt-get update
+RUN apt-get install -y ffmpeg libsm6 libxext6
 
 COPY pyproject* ./
 # Uncomment before review
