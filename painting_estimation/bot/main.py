@@ -78,7 +78,9 @@ async def label_adding(label_file: telegram.File, image_file: telegram.File) -> 
         np_label: np.ndarray = cv2_image_from_byte_io(io.BytesIO(raw_label))
         np_image: np.ndarray = cv2_image_from_byte_io(io.BytesIO(raw_image))
         np_image = insert_image(np_label, np_image, insertion_shape="circle")
-        byte_image: bytes = Image.fromarray(np_image).tobytes()
+        bytes_io = io.BytesIO()
+        Image.fromarray(cv2.cvtColor(np_image, cv2.COLOR_BGR2RGB)).save(bytes_io, format='PNG')
+        byte_image = bytes_io.getvalue()
     except Exception as exc:
         LOGGER.error(f"Unexpected Exception caught: {exc}")
         return None

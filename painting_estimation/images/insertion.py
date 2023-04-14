@@ -14,9 +14,10 @@ def insert_image(
     insertion_shape: typing.Literal["circle"] | None = None,
     contour_to_insert: np.ndarray | None = None,
 ) -> np.ndarray:
+    dst_img = background_img.copy()
 
     img_size = utils.image_size(img_to_insert)
-    bg_size = utils.image_size(background_img)
+    bg_size = utils.image_size(dst_img)
 
     scale_coef = insertion_size_coef * bg_size.width / min(img_size.width, img_size.height)
 
@@ -46,9 +47,7 @@ def insert_image(
         start_height += min_y + img_size.height - max_y - 1
         img_size = utils.image_size(img)
 
-        bg_part = background_img[
-            start_height : start_height + img_size.height, start_width : start_width + img_size.width
-        ]
+        bg_part = dst_img[start_height : start_height + img_size.height, start_width : start_width + img_size.width]
         cv2.drawContours(bg_part, [contour_to_insert], -1, (0, 0, 0), -1, cv2.LINE_AA)
         mask = np.zeros(bg_part.shape[:2], np.uint8)
         cv2.drawContours(mask, [contour_to_insert], -1, (255, 255, 255), -1, cv2.LINE_AA)
@@ -57,8 +56,6 @@ def insert_image(
     else:
         to_insert = img
 
-    background_img[
-        start_height : start_height + img_size.height, start_width : start_width + img_size.width
-    ] = to_insert
+    dst_img[start_height : start_height + img_size.height, start_width : start_width + img_size.width] = to_insert
 
-    return background_img
+    return dst_img
