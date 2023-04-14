@@ -11,7 +11,6 @@ python-telegram-bot = "*"
 uvicorn = "*"
 gunicorn = "*"
 python-multipart = "*"
-mlem = {version = "*", extras = ["flyio"]}
 prometheus-client = "*"
 prometheus-fastapi-instrumentator = "*"
 opencv-python = "*"
@@ -22,9 +21,15 @@ lightgbm = "^3.3.5"
 torch = {version = "*", optional = true }
 torchmetrics = {version = "*", optional = true }
 torchvision = {version = "*", optional = true }
+onnx = {version = "*", optional = true }
+onnx-simplifier = {version = "*", optional = true }
+tf2onnx = {version = "*", optional = true }
+mlem = {version = "*", extras = ["flyio"], optional = true }
 
 [tool.poetry.extras]
 torch = ["torch", "torchvision", "torchmetrics"]
+onnx = ["onnx", "onnxruntime", "onnx-simplifier", "tf2onnx"]
+mlem = ["mlem"]
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.0"
