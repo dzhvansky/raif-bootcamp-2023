@@ -1,9 +1,11 @@
+import io
 import logging
 
 import fastapi
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from painting_estimation import models
+from painting_estimation.inference.serving import predict_painting_price
 from painting_estimation.settings import settings
 
 
@@ -21,4 +23,9 @@ async def _():
 @APP.post("/predict", response_model=models.Predict)
 async def predict(file: fastapi.UploadFile):
     LOGGER.info(f"Got image `{file.filename}` with type `{file.content_type}`")
-    return models.Predict(price=2500)
+
+    if not isinstance(file.file, io.BytesIO):
+        raise ValueError(f"Unexpected IO type: only `io.BytesIO` is allowed, got {type(file.file)}.")
+
+    price: float = predict_painting_price(byte_io=file.file)
+    return models.Predict(price=price)
