@@ -15,7 +15,7 @@ from painting_estimation.settings import settings
 LOGGER: logging.Logger = logging.getLogger(__name__)
 HTTP_CLIENT: httpx.AsyncClient = httpx.AsyncClient()
 STYLE_TRANSFER_API: str = "https://aravinds1811-neural-style-transfer.hf.space/run/predict"
-STYLE_TRANSFER_TIMEOUT: int = 30
+STYLE_TRANSFER_TIMEOUT: int = 180  # 3 minutes
 
 
 async def download_to_memory(file: telegram.File) -> bytes:
@@ -109,6 +109,10 @@ async def estimate_price(update: telegram.Update, _: ContextTypes.DEFAULT_TYPE) 
                     caption="А ты хорош! За такую картину можно было бы выручить {price:0.0f}$!".format(
                         price=style_photo_prediction.price
                     ),
+                )
+            else:
+                await message.reply_text(
+                    "Хотели сделать кое-что интересное с твоей фотографией, но магия сломалась :( Приходи попозже!"
                 )
 
 
