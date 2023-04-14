@@ -1,8 +1,10 @@
-import pydantic
 import pathlib
+
 import joblib
-from onnxruntime import InferenceSession
 import numpy as np
+import pydantic
+from onnxruntime import InferenceSession
+
 
 MODELS_DIR = pathlib.Path(__file__).parent / "data/models/1/"
 

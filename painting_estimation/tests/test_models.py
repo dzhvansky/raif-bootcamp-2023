@@ -1,9 +1,9 @@
 import numpy as np
+
 from painting_estimation.models import FirstModel
 
 
 def white_image() -> np.ndarray:
-
     return np.full(fill_value=255, shape=(224, 224, 3), dtype=np.uint8)
 
 
