@@ -16,7 +16,7 @@ class PreprocessorProtocol(typing.Protocol):
 
 
 class PostprocessorProtocol(typing.Protocol):
-    def __call__(self, nn_output: np.ndarray) -> np.ndarray | float:
+    def __call__(self, nn_output: np.ndarray) -> typing.Union[np.ndarray, float]:
         ...
 
 
@@ -27,7 +27,7 @@ class AggregatorProtocol(typing.Protocol):
 
 class ONNXModel:
     def __init__(self, model_path: typing.Union[pathlib.Path, str]):
-        self.onnx_session = onnxruntime.InferenceSession(model_path)
+        self.onnx_session = onnxruntime.InferenceSession(str(model_path))
         self._get_onnx_names()
 
     def _get_onnx_names(self) -> None:
@@ -52,7 +52,7 @@ class ModelServing:
         self.preprocessor = preprocessor
         self.postprocessor = postprocessor
 
-    def __call__(self, image: np.ndarray) -> np.ndarray | float:
+    def __call__(self, image: np.ndarray) -> typing.Union[np.ndarray, float]:
         nn_input: np.ndarray = self.preprocessor(image)
         # image feature set or final price estimation
         output: np.ndarray = self.model(nn_input)
