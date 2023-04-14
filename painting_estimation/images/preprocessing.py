@@ -1,11 +1,12 @@
 import io
+import math
 import typing
 
 import cv2
 import numpy as np
 from PIL import Image
 
-from painting_estimation.images.utils import ImgSize
+from painting_estimation.images.utils import ImgSize, image_size
 
 
 def cv2_image_from_byte_io(byte_io: io.BytesIO) -> np.ndarray:
@@ -28,8 +29,10 @@ class ImagePreprocessor:
         interpolation: int = cv2.INTER_LINEAR,
         to_bgr: bool = False,
         extra_batch_dim: typing.Optional[int] = 0,
+        normalize: bool = False,
         means: typing.Optional[tuple[float, float, float]] = None,
         stds: typing.Optional[tuple[float, float, float]] = None,
+        initial_size_before_crop: ImgSize | None = None,
     ):
         self.target_size = target_size
         self.target_dim_order = target_dim_order
@@ -37,17 +40,39 @@ class ImagePreprocessor:
         self.interpolation = interpolation
         self.to_bgr = to_bgr
         self.extra_batch_dim = extra_batch_dim
+        self.normalize = normalize
         self.means = means
         self.stds = stds
+        self.initial_size_before_crop = initial_size_before_crop
+
+    @staticmethod
+    def _central_crop(image: np.ndarray, *, target_size: ImgSize) -> np.ndarray:
+        img_size: ImgSize = image_size(image)
+        cx: int
+        cy: int
+        cx, cy = img_size.width // 2, img_size.height // 2
+        height_start: int = cy - target_size.height // 2
+        height_end: int = cy + math.ceil(target_size.height / 2)
+        width_start: int = cx - target_size.width // 2
+        width_end: int = cx + math.ceil(target_size.width / 2)
+        return image[height_start:height_end, width_start:width_end]
 
     def __call__(self, image: np.ndarray) -> np.ndarray:
         if self.to_bgr:
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-        normalized_img = cv2.resize(
-            image, dsize=(self.target_size.width, self.target_size.height), interpolation=self.interpolation
-        ).astype(self.target_dtype)
+        if self.initial_size_before_crop is not None:
+            size: ImgSize = self.initial_size_before_crop
+        else:
+            size = self.target_size
+        normalized_img = cv2.resize(image, dsize=(size.width, size.height), interpolation=self.interpolation).astype(
+            self.target_dtype
+        )
+        if self.initial_size_before_crop is not None:
+            normalized_img = self._central_crop(normalized_img, target_size=self.target_size)
 
+        if self.normalize:
+            normalized_img /= 255.0
         if self.means is not None:
             normalized_img = normalized_img - np.asarray(self.means, dtype=self.target_dtype)
         if self.stds is not None:
