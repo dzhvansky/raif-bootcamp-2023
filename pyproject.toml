@@ -40,6 +40,7 @@ coverage = "^7.0"
 mypy = "^1.0"
 pylint = "^2.15.6"
 locust = "^2.15.1"
+memory-profiler = "^0.61.0"
 
 [tool.poetry.group.format.dependencies]
 black = "^22.0"
