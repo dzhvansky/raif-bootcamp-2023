@@ -4,6 +4,8 @@
 
 Deployed API (docs): https://velvet-wolves-art-expert-api.fly.dev/docs
 
+Service dashboard: https://fly-metrics.net/d/_eX4mpl3/bootcamp-dashboard?orgId=205759&refresh=5s
+
 # Quickstart
 
 Run `poetry install`
