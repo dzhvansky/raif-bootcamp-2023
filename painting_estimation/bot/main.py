@@ -19,7 +19,7 @@ from painting_estimation.settings import settings
 LOGGER: logging.Logger = logging.getLogger(__name__)
 HTTP_CLIENT: httpx.AsyncClient = httpx.AsyncClient()
 STYLE_TRANSFER_API: str = "https://aravinds1811-neural-style-transfer.hf.space/run/predict"
-STYLE_TRANSFER_TIMEOUT: int = 30
+STYLE_TRANSFER_TIMEOUT: int = 180  # 3 minutes
 
 
 async def download_to_memory(file: telegram.File) -> bytes:
@@ -111,7 +111,7 @@ async def estimate_price(update: telegram.Update, _: ContextTypes.DEFAULT_TYPE) 
 
     caption = textwrap.dedent(
         """
-        Отличный piece of art! На черном рынке за него дадут {price}$ ;)
+        Отличный piece of art! На черном рынке за него дадут {price:0.0f}$ ;)
     """
     ).format(price=prediction.price)
 
@@ -126,7 +126,7 @@ async def estimate_price(update: telegram.Update, _: ContextTypes.DEFAULT_TYPE) 
                 labeled_image_prediction: models.Predict = await fetch_price(labeled_image)
                 await message.reply_photo(
                     labeled_image,
-                    caption="Но стоит тебе оставить свою подпись, и это будет уже {price}$!".format(
+                    caption="Но с твоей личной подписью это будет уже {price:0.0f}$, не забывай ставить копирайт!".format(
                         price=labeled_image_prediction.price
                     ),
                 )
@@ -134,9 +134,13 @@ async def estimate_price(update: telegram.Update, _: ContextTypes.DEFAULT_TYPE) 
                 style_photo_prediction: models.Predict = await fetch_price(styled_photo)
                 await message.reply_photo(
                     styled_photo,
-                    caption="Мы можем пойти дальше и раскрыть твою индивидуальность на максимум! Всего за {price}$!".format(
+                    caption="Мы можем пойти дальше и раскрыть твою индивидуальность на максимум! Всего за {price:0.0f}$!".format(
                         price=style_photo_prediction.price
                     ),
+                )
+            else:
+                await message.reply_text(
+                    "Хотели сделать кое-что интересное с твоей фотографией, но магия сломалась :( Приходи попозже!"
                 )
 
 

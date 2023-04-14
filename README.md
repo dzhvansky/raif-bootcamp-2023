@@ -42,3 +42,8 @@ or force deployment manually:
 # Load testing
 
 Run `poetry run locust -f painting_estimation/load_test.py` and open browser with suggested link
+
+# Memory profiling
+
+1. Run `poetry run mpref run pytest tests/test_api.py`
+2. run `poetry run mpref plot -o mem.py --title "Prediction API RAM consumption"`

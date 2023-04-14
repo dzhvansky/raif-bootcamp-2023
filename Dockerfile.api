@@ -35,4 +35,4 @@ COPY . .
 RUN chown python:python /srv -R
 EXPOSE 8000
 USER python:python
-CMD ["/srv/www/bin/app/run-api.sh"]
+CMD ["/srv/www/bin/scripts/run-api-dev.sh"]
