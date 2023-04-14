@@ -92,7 +92,7 @@ async def estimate_price(update: telegram.Update, _: ContextTypes.DEFAULT_TYPE) 
 
     caption = textwrap.dedent(
         """
-        Отличный piece of art! На черном рынке за него дадут {price}$ ;)
+        Отличный piece of art! На черном рынке за него дадут {price:0.0f}$ ;)
     """
     ).format(price=prediction.price)
 
@@ -106,7 +106,7 @@ async def estimate_price(update: telegram.Update, _: ContextTypes.DEFAULT_TYPE) 
                 style_photo_prediction: models.Predict = await fetch_price(styled_photo)
                 await message.reply_photo(
                     styled_photo,
-                    caption="А ты хорош! За такую картину можно было бы выручить {price}$!".format(
+                    caption="А ты хорош! За такую картину можно было бы выручить {price:0.0f}$!".format(
                         price=style_photo_prediction.price
                     ),
                 )
