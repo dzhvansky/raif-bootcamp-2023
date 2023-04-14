@@ -29,13 +29,6 @@ async def download_to_memory(file: telegram.File) -> bytes:
         return io_target.read()
 
 
-async def download_to_numpy(file: telegram.File) -> np.ndarray:
-    with io.BytesIO() as io_target:
-        await file.download_to_memory(io_target)
-        io_target.seek(0)
-        return cv2_image_from_byte_io(io_target)
-
-
 async def fetch_price(image: bytes) -> models.Predict:
     LOGGER.info(f"Making prediction request to {settings.ml_api}")
     try:
