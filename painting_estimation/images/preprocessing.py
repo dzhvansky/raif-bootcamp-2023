@@ -13,6 +13,12 @@ def cv2_image_from_byte_io(byte_io: io.BytesIO) -> np.ndarray:
     return np.asarray(pil_image, dtype=np.uint8)
 
 
+def cv2_image_to_bytes(image: np.ndarray) -> bytes:
+    bytes_io = io.BytesIO()
+    Image.fromarray(image).save(bytes_io, format='PNG')
+    return bytes_io.getvalue()
+
+
 class ImagePreprocessor:
     def __init__(
         self,

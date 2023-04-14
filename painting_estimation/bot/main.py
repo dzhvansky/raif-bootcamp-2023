@@ -7,12 +7,11 @@ import textwrap
 import httpx
 import numpy as np
 import telegram
-from PIL import Image
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 
 from painting_estimation import models
 from painting_estimation.images.insertion import insert_image
-from painting_estimation.images.preprocessing import cv2_image_from_byte_io
+from painting_estimation.images.preprocessing import cv2_image_from_byte_io, cv2_image_to_bytes
 from painting_estimation.settings import settings
 
 
@@ -78,9 +77,7 @@ async def label_adding(label_file: telegram.File, image_file: telegram.File) -> 
         np_label: np.ndarray = cv2_image_from_byte_io(io.BytesIO(raw_label))
         np_image: np.ndarray = cv2_image_from_byte_io(io.BytesIO(raw_image))
         np_image = insert_image(np_label, np_image, insertion_shape="circle")
-        bytes_io = io.BytesIO()
-        Image.fromarray(cv2.cvtColor(np_image, cv2.COLOR_BGR2RGB)).save(bytes_io, format='PNG')
-        byte_image = bytes_io.getvalue()
+        byte_image: bytes = cv2_image_to_bytes(np_image)
     except Exception as exc:
         LOGGER.error(f"Unexpected Exception caught: {exc}")
         return None

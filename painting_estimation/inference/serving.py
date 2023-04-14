@@ -5,7 +5,6 @@ import numpy as np
 
 from painting_estimation.images.preprocessing import cv2_image_from_byte_io
 from painting_estimation.inference.inference import EnsembleServing, ModelServing
-from painting_estimation.model.inception_model import FIRST_SERVING
 from painting_estimation.model.effnet_model import SECOND_SERVING
 
 

@@ -1,6 +1,8 @@
-import numpy as np
 import pathlib
+
 import joblib
+import numpy as np
+
 from painting_estimation.images.preprocessing import ImagePreprocessor, ImgSize
 from painting_estimation.inference.inference import ModelServing, ONNXModel
 
@@ -17,7 +19,6 @@ def preprocessor(image: np.ndarray) -> np.ndarray:
 
 
 def postprocessor(nn_output: np.ndarray) -> float:
-
     lgbm = joblib.load(str(MODELS_DIR / "lgb.pkl"))
     price = np.expm1(lgbm.predict(nn_output))[0]
     price = price if price < 10000 else price * 1.5
