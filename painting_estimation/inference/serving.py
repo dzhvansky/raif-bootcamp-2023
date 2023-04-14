@@ -1,11 +1,10 @@
 import io
+import typing
 
 import numpy as np
-import typing
 
 from painting_estimation.images.preprocessing import cv2_image_from_byte_io
 from painting_estimation.inference.inference import EnsembleServing, ModelServing
-from painting_estimation.model.dummy_model import DUMMY_SERVING
 from painting_estimation.model.inception_lgbm import FIRST_SERVING
 
 

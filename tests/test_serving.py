@@ -1,10 +1,7 @@
-import pathlib
-import pytest
-
-import numpy as np
 from io import BytesIO
-from painting_estimation.inference.serving import predict_painting_price 
 
+
+from painting_estimation.inference.serving import predict_painting_price
 
 
 def test_predict(test_image: bytes) -> None:
