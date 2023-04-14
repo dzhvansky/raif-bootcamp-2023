@@ -5,15 +5,7 @@ import cv2
 import numpy as np
 from PIL import Image
 
-
-class ImgSize(typing.NamedTuple):
-    width: int
-    height: int
-
-
-def image_size(img: np.ndarray) -> ImgSize:
-    height, width, *_ = img.shape
-    return ImgSize(width=width, height=height)
+from painting_estimation.images.utils import ImgSize
 
 
 def cv2_image_from_byte_io(byte_io: io.BytesIO) -> np.ndarray:
