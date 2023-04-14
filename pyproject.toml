@@ -16,8 +16,9 @@ prometheus-fastapi-instrumentator = "*"
 opencv-python = "*"
 pillow = "*"
 onnxruntime = "*"
-joblib = "^1.2.0"
-lightgbm = "^3.3.5"
+joblib = "*"
+lightgbm = "*"
+scikit-learn = "*"
 torch = {version = "*", optional = true }
 torchmetrics = {version = "*", optional = true }
 torchvision = {version = "*", optional = true }

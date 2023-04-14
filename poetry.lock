@@ -2577,7 +2577,7 @@ torch = ["torch", "torchvision", "torchmetrics"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10,<3.11"
-content-hash = "221fce275ebf3b477a222e38ad2bcfefc3f8806dd3aa9082eedb713212ebb76f"
+content-hash = "9d5a2ddcfaf7caa7f467bbfc7dbb03b27fa9609c8fe366f20ca9679d8d78b261"
 
 [metadata.files]
 aiohttp = [
