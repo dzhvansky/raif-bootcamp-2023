@@ -5,10 +5,14 @@ import logging
 import textwrap
 
 import httpx
+import numpy as np
 import telegram
+from PIL import Image
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 
 from painting_estimation import models
+from painting_estimation.images.insertion import insert_image
+from painting_estimation.images.preprocessing import cv2_image_from_byte_io
 from painting_estimation.settings import settings
 
 
@@ -66,6 +70,21 @@ async def style_transfer(content_file: telegram.File, style_file: telegram.File)
     return base64_decode(response["data"][0][22:])
 
 
+async def label_adding(label_file: telegram.File, image_file: telegram.File) -> bytes | None:
+    raw_label: bytes
+    raw_image: bytes
+    raw_label, raw_image = await asyncio.gather(download_to_memory(label_file), download_to_memory(image_file))
+    try:
+        np_label: np.ndarray = cv2_image_from_byte_io(io.BytesIO(raw_label))
+        np_image: np.ndarray = cv2_image_from_byte_io(io.BytesIO(raw_image))
+        np_image = insert_image(np_label, np_image, insertion_shape="circle")
+        byte_image: bytes = Image.fromarray(np_image).tobytes()
+    except Exception as exc:
+        LOGGER.error(f"Unexpected Exception caught: {exc}")
+        return None
+    return byte_image
+
+
 async def start(update: telegram.Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user_name: str = update.effective_user.first_name if update.effective_user else "коллега"
@@ -102,11 +121,20 @@ async def estimate_price(update: telegram.Update, _: ContextTypes.DEFAULT_TYPE) 
     if user:
         if user_photo := await user.get_profile_photos():
             latest_user_photo: telegram.PhotoSize = user_photo.photos[0][-1]
-            if styled_photo := await style_transfer(await latest_user_photo.get_file(), image):
+            loaded_user_photo: telegram.File = await latest_user_photo.get_file()
+            if labeled_image := await label_adding(loaded_user_photo, image):
+                labeled_image_prediction: models.Predict = await fetch_price(labeled_image)
+                await message.reply_photo(
+                    labeled_image,
+                    caption="Но с твоей личной подписью это будет уже {price:0.0f}$, не забывай ставить копирайт!".format(
+                        price=labeled_image_prediction.price
+                    ),
+                )
+            if styled_photo := await style_transfer(loaded_user_photo, image):
                 style_photo_prediction: models.Predict = await fetch_price(styled_photo)
                 await message.reply_photo(
                     styled_photo,
-                    caption="А ты хорош! За такую картину можно было бы выручить {price:0.0f}$!".format(
+                    caption="Мы можем пойти дальше и раскрыть твою индивидуальность на максимум! Всего за {price:0.0f}$!".format(
                         price=style_photo_prediction.price
                     ),
                 )

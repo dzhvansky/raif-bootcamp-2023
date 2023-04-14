@@ -5,15 +5,7 @@ import cv2
 import numpy as np
 from PIL import Image
 
-
-class ImgSize(typing.NamedTuple):
-    width: int
-    height: int
-
-
-def image_size(img: np.ndarray) -> ImgSize:
-    height, width, *_ = img.shape
-    return ImgSize(width=width, height=height)
+from painting_estimation.images.utils import ImgSize
 
 
 def cv2_image_from_byte_io(byte_io: io.BytesIO) -> np.ndarray:
@@ -26,9 +18,9 @@ class ImagePreprocessor:
         self,
         target_size: ImgSize,
         target_dim_order: tuple[int, int, int],
-        target_dtype: typing.Union[np.int_, np.float_],
+        target_dtype: type[np.int_] | type[np.float_],
         interpolation: int = cv2.INTER_LINEAR,
-        to_bgr: bool = True,
+        to_bgr: bool = False,
         extra_batch_dim: typing.Optional[int] = 0,
         means: typing.Optional[tuple[float, float, float]] = None,
         stds: typing.Optional[tuple[float, float, float]] = None,
