@@ -11,7 +11,7 @@ processes = []
 dockerfile = "Dockerfile.api"
 
 [metrics]
-port = 8080
+port = 8000
 path = "/metrics"
 
 [[services]]

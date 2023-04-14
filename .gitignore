@@ -61,3 +61,5 @@ env/*.env
 
 # poetry lock for now
 #poetry.lock
+
+.python-version
