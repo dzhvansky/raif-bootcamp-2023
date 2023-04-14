@@ -1,4 +1,4 @@
-[![build](https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml/badge.svg)](https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml) [![python](https://img.shields.io/badge/Python-1.10-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![FastAPI](https://img.shields.io/badge/FastAPI-0.95.0-009688.svg?style=flat&logo=FastAPI&logoColor=white)](https://fastapi.tiangolo.com)
+[![build](https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml/badge.svg)](https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml) [![python](https://img.shields.io/badge/Python-3.10-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) [![FastAPI](https://img.shields.io/badge/FastAPI-0.95.0-009688.svg?style=flat&logo=FastAPI&logoColor=white)](https://fastapi.tiangolo.com)
 
 # Raiffeisen bootcamp 2023 - Telegram bot for painting value estimation
 
@@ -37,3 +37,8 @@ or tag a commit with some version in format `v*.*.*` (for ex. `v1.0.1`) and let 
 or force deployment manually:
 1. go to https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml
 1. Press "Run workflow" button and actually run it
+
+
+# Load testing
+
+Run `poetry run locust -f painting_estimation/load_test.py` and open browser with suggested link

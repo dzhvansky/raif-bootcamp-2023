@@ -1,9 +1,10 @@
+import asyncio
+import base64
 import io
 import logging
 import textwrap
 
 import httpx
-import numpy as np
 import telegram
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 
@@ -13,17 +14,56 @@ from painting_estimation.settings import settings
 
 LOGGER: logging.Logger = logging.getLogger(__name__)
 HTTP_CLIENT: httpx.AsyncClient = httpx.AsyncClient()
+STYLE_TRANSFER_API: str = "https://aravinds1811-neural-style-transfer.hf.space/run/predict"
+STYLE_TRANSFER_TIMEOUT: int = 30
 
 
-async def fetch_price(image: telegram.File) -> models.Predict:
-    LOGGER.info(f"Making prediction request to {settings.ml_api}")
+async def download_to_memory(file: telegram.File) -> bytes:
     with io.BytesIO() as io_target:
-        await image.download_to_memory(io_target)
+        await file.download_to_memory(io_target)
         io_target.seek(0)
-        response: httpx.Response = await HTTP_CLIENT.post(settings.ml_api, files={"file": io_target.read()})
-        if response.status_code != 200:
-            LOGGER.error("Failed to fetch predictions from ML API")
-    return models.Predict.parse_raw(response.content)
+        return io_target.read()
+
+
+async def fetch_price(image: bytes) -> models.Predict:
+    LOGGER.info(f"Making prediction request to {settings.ml_api}")
+    try:
+        response: httpx.Response = await HTTP_CLIENT.post(settings.ml_api, files={"file": image})
+    except httpx.ReadTimeout:
+        LOGGER.error("Failed to fetch predictions from ML API, timeout")
+        return models.Predict()
+    if response.status_code != 200:
+        LOGGER.error(f"Failed to fetch predictions from ML API, status_code: {response.status_code}")
+    try:
+        parsed_predict = models.Predict.parse_raw(response.content)
+    except ValueError:
+        LOGGER.error("Failed to parse API response, returning default value")
+        return models.Predict()
+    return parsed_predict
+
+
+def base64_encode(data: bytes) -> str:
+    return f"data:image/png;base64,{base64.b64encode(data).decode()}"
+
+
+def base64_decode(data: str) -> bytes:
+    return base64.b64decode(data)
+
+
+async def style_transfer(content_file: telegram.File, style_file: telegram.File) -> bytes | None:
+    raw_content: bytes
+    raw_style: bytes
+    raw_content, raw_style = await asyncio.gather(download_to_memory(content_file), download_to_memory(style_file))
+    try:
+        response: dict = httpx.post(
+            STYLE_TRANSFER_API,
+            json={"data": [base64_encode(raw_content), base64_encode(raw_style)]},
+            timeout=STYLE_TRANSFER_TIMEOUT,
+        ).json()
+    except httpx.ReadTimeout:
+        LOGGER.error("Failed to fetch style transfer result")
+        return None
+    return base64_decode(response["data"][0][22:])
 
 
 async def start(update: telegram.Update, _: ContextTypes.DEFAULT_TYPE) -> None:
@@ -48,34 +88,28 @@ async def estimate_price(update: telegram.Update, _: ContextTypes.DEFAULT_TYPE) 
 
     latest_photo: telegram.PhotoSize = message.photo[-1]
     image: telegram.File = await latest_photo.get_file()
-    prediction: models.Predict = await fetch_price(image=image)
+    prediction: models.Predict = await fetch_price(image=await download_to_memory(image))
 
     caption = textwrap.dedent(
         """
-        Original Title: {title}
-        Author: {author}
-        Date: {date}
-        Estimated price: {price} $ [Sothebys auction]
-        Style: {style}
-        Genre: {genre}
-        Media: {media}
-        Similar painting: {similar}
+        Отличный piece of art! На черном рынке за него дадут {price}$ ;)
     """
-    ).format(
-        title="Unknown",
-        author=user.full_name if user else "Unknown",
-        date=np.random.choice(["2023", "Beginning of XXI century", "2020-es"]),
-        price=prediction.price,
-        style=np.random.choice(["Surrealism", "Realism", "Abstract Art", "Impressionism"]),
-        genre=np.random.choice(
-            ["animal painting", "portrait", "abstract", "illustration", "sketch and study", "figurative", "landscape"]
-        ),
-        media=np.random.choice(["oil", "pencil", "photo"]),
-        similar="https://www.sothebys.com/en/buy/fine-art/paintings/abstract/_eve-ackroyd-woman-as-still-life-4eb9",
-    )
+    ).format(price=prediction.price)
 
     LOGGER.info(f"Received photo to score from {user.full_name if user else 'somebody'}")
-    await message.reply_photo(latest_photo.file_id, caption=caption)
+    await message.reply_text(caption)
+
+    if user:
+        if user_photo := await user.get_profile_photos():
+            latest_user_photo: telegram.PhotoSize = user_photo.photos[0][-1]
+            if styled_photo := await style_transfer(await latest_user_photo.get_file(), image):
+                style_photo_prediction: models.Predict = await fetch_price(styled_photo)
+                await message.reply_photo(
+                    styled_photo,
+                    caption="А ты хорош! За такую картину можно было бы выручить {price}$!".format(
+                        price=style_photo_prediction.price
+                    ),
+                )
 
 
 APP = ApplicationBuilder().token(settings.telegram_token).build()
