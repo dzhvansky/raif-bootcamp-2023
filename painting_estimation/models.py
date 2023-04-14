@@ -11,6 +11,8 @@ MODELS_DIR = pathlib.Path(__file__).parent / "data/models/1/"
 
 class Predict(pydantic.BaseModel):
     price: float = 2500
+    aspect: float | None = None
+    mean_pixel: float | None = None
 
 
 class FirstModel(pydantic.BaseModel):
