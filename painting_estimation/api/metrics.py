@@ -2,7 +2,6 @@ import io
 import math
 import typing
 
-import fastapi
 import numpy as np
 from PIL import Image
 from prometheus_client import Histogram, Summary
