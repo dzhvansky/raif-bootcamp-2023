@@ -167,22 +167,24 @@ async def estimate_price(update: telegram.Update, _: ContextTypes.DEFAULT_TYPE) 
     LOGGER.info(f"Received photo to score from {user.full_name if user else 'somebody'}")
     await message.reply_text(caption)
 
+    artist_name, artist_pic, style_pic = random_artist_painting()
+    if artist_styled_image := await artist_style_transfer(image, style_pic, artist_pic):
+        artist_styled_prediction: models.Predict = await fetch_price(artist_styled_image)
+        await message.reply_photo(
+            artist_styled_image,
+            caption="Мало кто знает, но {artist} тоже вдохновлялся этим шедевром, ценник просто смешной - {price:0.0f}$".format(
+                price=artist_styled_prediction.price,
+                artist=artist_name,
+            ),
+        )
+    else:
+        artist_styled_prediction = models.Predict()
+
     if user:
         if user_photo := await user.get_profile_photos():
             latest_user_photo: telegram.PhotoSize = user_photo.photos[0][-1]
-            loaded_user_photo: telegram.File = await latest_user_photo.get_file()
-            artist_name, artist_pic, style_pic = random_artist_painting()
-            if artist_styled_image := await artist_style_transfer(image, style_pic, artist_pic):
-                artist_styled_prediction: models.Predict = await fetch_price(artist_styled_image)
-                await message.reply_photo(
-                    artist_styled_image,
-                    caption="Мало кто знает, но {artist} тоже вдохновлялся этим шедевром, ценник просто смешной - {price:0.0f}$".format(
-                        price=artist_styled_prediction.price,
-                        artist=artist_name,
-                    ),
-                )
-            if styled_photo := await style_transfer(loaded_user_photo, image):
-                styled_photo_price = prediction.price + np.random.randint(5000, 10000)
+            if styled_photo := await style_transfer(await latest_user_photo.get_file(), image):
+                styled_photo_price = max(prediction.price, artist_styled_prediction.price) + random.randint(2000, 5000)
                 await message.reply_photo(
                     styled_photo,
                     caption="Ты униикальна(-ен) и неповторим(-а)! Но даже эта картина имеет цену {price:0.0f}$!".format(
