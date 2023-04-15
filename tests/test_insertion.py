@@ -1,5 +1,7 @@
-import numpy as np
 from io import BytesIO
+
+import numpy as np
+
 from painting_estimation.images.insertion import insert_image
 from painting_estimation.images.preprocessing import cv2_image_from_byte_io
 
