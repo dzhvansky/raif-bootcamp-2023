@@ -122,11 +122,11 @@ async def estimate_price(update: telegram.Update, _: ContextTypes.DEFAULT_TYPE) 
             latest_user_photo: telegram.PhotoSize = user_photo.photos[0][-1]
             loaded_user_photo: telegram.File = await latest_user_photo.get_file()
             if labeled_image := await label_adding(loaded_user_photo, image):
-                labeled_image_prediction: models.Predict = await fetch_price(labeled_image)
+                labeled_image_price: float = prediction.price * np.random.randint(1, 10) / 100
                 await message.reply_photo(
                     labeled_image,
                     caption="Но с твоей личной подписью это будет уже {price:0.0f}$, не забывай ставить копирайт!".format(
-                        price=labeled_image_prediction.price
+                        price=labeled_image_price
                     ),
                 )
             if styled_photo := await style_transfer(loaded_user_photo, image):
