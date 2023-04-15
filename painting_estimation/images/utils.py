@@ -1,7 +1,20 @@
+import io
 import typing
 
 import cv2
 import numpy as np
+from PIL import Image
+
+
+def cv2_image_from_byte_io(byte_io: io.BytesIO | bytes) -> np.ndarray:
+    pil_image: Image = Image.open(byte_io).convert("RGB")
+    return np.asarray(pil_image, dtype=np.uint8)
+
+
+def cv2_image_to_bytes(image: np.ndarray) -> bytes:
+    bytes_io = io.BytesIO()
+    Image.fromarray(image).save(bytes_io, format='PNG')
+    return bytes_io.getvalue()
 
 
 class ImgSize(typing.NamedTuple):
@@ -15,7 +28,7 @@ def image_size(img: np.ndarray) -> ImgSize:
 
 
 def build_circle_shape(image: np.ndarray) -> np.ndarray:
-    img_size = image_size(image)
+    img_size: ImgSize = image_size(image)
     min_dim: int = min(img_size.width, img_size.height)
 
     black_img = np.zeros_like(image)

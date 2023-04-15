@@ -3,7 +3,7 @@ from io import BytesIO
 import numpy as np
 
 from painting_estimation.images.insertion import insert_image
-from painting_estimation.images.preprocessing import cv2_image_from_byte_io
+from painting_estimation.images.utils import cv2_image_from_byte_io
 
 
 def test_insertion(test_image: bytes) -> None:

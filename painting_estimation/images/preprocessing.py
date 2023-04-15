@@ -1,23 +1,10 @@
-import io
 import math
 import typing
 
 import cv2
 import numpy as np
-from PIL import Image
 
 from painting_estimation.images.utils import ImgSize, image_size
-
-
-def cv2_image_from_byte_io(byte_io: io.BytesIO) -> np.ndarray:
-    pil_image: Image = Image.open(byte_io).convert("RGB")
-    return np.asarray(pil_image, dtype=np.uint8)
-
-
-def cv2_image_to_bytes(image: np.ndarray) -> bytes:
-    bytes_io = io.BytesIO()
-    Image.fromarray(image).save(bytes_io, format='PNG')
-    return bytes_io.getvalue()
 
 
 class ImagePreprocessor:
@@ -78,7 +65,7 @@ class ImagePreprocessor:
         if self.stds is not None:
             normalized_img = normalized_img / np.asarray(self.stds, dtype=self.target_dtype)
 
-        prepared_img = normalized_img.transpose(self.target_dim_order)
+        prepared_img: np.ndarray = normalized_img.transpose(self.target_dim_order)
 
         if self.extra_batch_dim is not None:
             prepared_img = np.expand_dims(prepared_img, axis=self.extra_batch_dim)

@@ -21,7 +21,7 @@ class PostprocessorProtocol(typing.Protocol):
 
 
 class AggregatorProtocol(typing.Protocol):
-    def __call__(self, outputs: typing.Mapping[str, np.ndarray]) -> float:
+    def __call__(self, outputs: typing.Mapping[str, np.ndarray | float]) -> float:
         ...
 
 
@@ -58,7 +58,7 @@ class ModelServing:
         output: np.ndarray = self.model(nn_input)
 
         if self.postprocessor is not None:
-            output = self.postprocessor(output)
+            return self.postprocessor(output)
 
         return output
 

@@ -11,7 +11,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, Messa
 
 from painting_estimation import models
 from painting_estimation.images.insertion import insert_image
-from painting_estimation.images.preprocessing import cv2_image_from_byte_io, cv2_image_to_bytes
+from painting_estimation.images.utils import cv2_image_from_byte_io, cv2_image_to_bytes
 from painting_estimation.settings import settings
 
 

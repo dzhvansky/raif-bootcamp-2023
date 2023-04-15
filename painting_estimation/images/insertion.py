@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 
 from painting_estimation.images import utils
+from painting_estimation.images.utils import ImgSize
 
 
 def insert_image(
@@ -14,23 +15,23 @@ def insert_image(
     insertion_shape: typing.Literal["circle"] | None = None,
     contour_to_insert: np.ndarray | None = None,
 ) -> np.ndarray:
-    dst_img = background_img.copy()
+    dst_img: np.ndarray = background_img.copy()
 
-    img_size = utils.image_size(img_to_insert)
-    bg_size = utils.image_size(dst_img)
+    img_size: ImgSize = utils.image_size(img_to_insert)
+    bg_size: ImgSize = utils.image_size(dst_img)
 
-    scale_coef = insertion_size_coef * bg_size.width / min(img_size.width, img_size.height)
+    scale_coef: float = insertion_size_coef * bg_size.width / min(img_size.width, img_size.height)
 
-    img = cv2.resize(
+    img: np.ndarray = cv2.resize(
         img_to_insert,
-        dsize=tuple(map(round, (img_size.width * scale_coef, img_size.height * scale_coef))),
+        dsize=(round(img_size.width * scale_coef), round(img_size.height * scale_coef)),
         interpolation=cv2.INTER_AREA,
     )
     img_size = utils.image_size(img)
 
-    indent = round(right_indent * min(bg_size.width, bg_size.height))
-    start_width = bg_size.width - indent - img_size.width
-    start_height = bg_size.height - indent - img_size.height
+    indent: int = round(right_indent * min(bg_size.width, bg_size.height))
+    start_width: int = bg_size.width - indent - img_size.width
+    start_height: int = bg_size.height - indent - img_size.height
 
     if contour_to_insert is not None:
         contour_to_insert = np.rint(contour_to_insert.astype(float) * scale_coef).astype(np.int32)
@@ -47,11 +48,13 @@ def insert_image(
         start_height += min_y + img_size.height - max_y - 1
         img_size = utils.image_size(img)
 
-        bg_part = dst_img[start_height : start_height + img_size.height, start_width : start_width + img_size.width]
+        bg_part: np.ndarray = dst_img[
+            start_height : start_height + img_size.height, start_width : start_width + img_size.width
+        ]
         cv2.drawContours(bg_part, [contour_to_insert], -1, (0, 0, 0), -1, cv2.LINE_AA)
-        mask = np.zeros(bg_part.shape[:2], np.uint8)
+        mask: np.ndarray = np.zeros(bg_part.shape[:2], np.uint8)
         cv2.drawContours(mask, [contour_to_insert], -1, (255, 255, 255), -1, cv2.LINE_AA)
-        original_without_bg = cv2.bitwise_and(img, img, mask=mask)
+        original_without_bg: np.ndarray = cv2.bitwise_and(img, img, mask=mask)
         to_insert = cv2.bitwise_or(bg_part, original_without_bg)
     else:
         to_insert = img

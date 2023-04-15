@@ -2,8 +2,8 @@ from io import BytesIO
 
 import numpy as np
 
-from painting_estimation.images.preprocessing import ImagePreprocessor, cv2_image_from_byte_io
-from painting_estimation.images.utils import ImgSize
+from painting_estimation.images.preprocessing import ImagePreprocessor
+from painting_estimation.images.utils import ImgSize, cv2_image_from_byte_io
 
 
 def test_preproc(test_image: bytes) -> None:
