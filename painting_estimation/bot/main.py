@@ -176,7 +176,7 @@ async def estimate_price(update: telegram.Update, _: ContextTypes.DEFAULT_TYPE) 
                 artist_styled_prediction: models.Predict = await fetch_price(artist_styled_image)
                 await message.reply_photo(
                     artist_styled_image,
-                    caption="Мало кто знает, но {artist: artist_name} тоже вдохновлялся этим шедевром, ценник просто смешной - {price:0.0f}$".format(
+                    caption="Мало кто знает, но {artist} тоже вдохновлялся этим шедевром, ценник просто смешной - {price:0.0f}$".format(
                         price=artist_styled_prediction.price,
                         artist=artist_name,
                     ),
