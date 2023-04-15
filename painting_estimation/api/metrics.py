@@ -36,5 +36,7 @@ def ml_metrics() -> typing.Callable[[Info], None]:
 
 
 def image_features(file: bytes | io.BytesIO) -> dict:
+    if isinstance(file, bytes):
+        file = io.BytesIO(file)
     image = Image.open(file).convert("RGB")
     return {"aspect": image.width / image.height, "mean_pixel": np.array(image).mean()}

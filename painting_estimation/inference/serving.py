@@ -11,7 +11,7 @@ from painting_estimation.model.effnet_model import SECOND_SERVING
 SERVING: typing.Union[ModelServing, EnsembleServing] = SECOND_SERVING
 
 
-def predict_painting_price(byte_io: io.BytesIO | bytes) -> float:
+def predict_painting_price(byte_io: io.BytesIO) -> float:
     rgb_numpy_image: np.ndarray = cv2_image_from_byte_io(byte_io=byte_io)
     price: np.ndarray | float = SERVING(rgb_numpy_image)
 

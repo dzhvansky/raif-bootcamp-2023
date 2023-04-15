@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image
 
 
-def cv2_image_from_byte_io(byte_io: io.BytesIO | bytes) -> np.ndarray:
+def cv2_image_from_byte_io(byte_io: io.BytesIO) -> np.ndarray:
     pil_image: Image = Image.open(byte_io).convert("RGB")
     return np.asarray(pil_image, dtype=np.uint8)
 

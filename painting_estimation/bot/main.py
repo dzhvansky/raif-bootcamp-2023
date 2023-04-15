@@ -2,6 +2,8 @@ import asyncio
 import base64
 import io
 import logging
+import pathlib
+import random
 import textwrap
 
 import httpx
@@ -19,6 +21,30 @@ LOGGER: logging.Logger = logging.getLogger(__name__)
 HTTP_CLIENT: httpx.AsyncClient = httpx.AsyncClient()
 STYLE_TRANSFER_API: str = "https://aravinds1811-neural-style-transfer.hf.space/run/predict"
 STYLE_TRANSFER_TIMEOUT: int = 180  # 3 minutes
+
+
+DATA_DIR = pathlib.Path(__file__).parents[2] / "data" / "pics"
+ARTIST_DIR = DATA_DIR / "artists"
+PAINTING_DIR = DATA_DIR / "paintings"
+
+ARTISTS: dict[str, str] = {
+    "brjullov": "Карл Брюллов",
+    "dali": "Сальвадор Дали",
+    "davinci": "Леонардо Да Винчи",
+    "malevich": "Казимир Малевич",
+    "mone": "Клод Моне",
+    "repin": "Илья Репин",
+    "vrubel": "Михаил Врубель",
+}
+
+
+def random_artist_painting() -> tuple[str, bytes, bytes]:
+    artists = list(ARTISTS.keys())
+    random_idx = random.randint(0, len(artists) - 1)
+    artist = artists[random_idx]
+    artist_pic = (ARTIST_DIR / f"{artist}.jpg").read_bytes()
+    painting_pic = (PAINTING_DIR / f"{artist}_pic.jpg").read_bytes()
+    return ARTISTS[artist], artist_pic, painting_pic
 
 
 async def download_to_memory(file: telegram.File) -> bytes:
@@ -69,6 +95,30 @@ async def style_transfer(content_file: telegram.File, style_file: telegram.File)
     return base64_decode(response["data"][0][22:])
 
 
+async def artist_style_transfer(content_file: telegram.File, raw_style: bytes, raw_artist: bytes) -> bytes | None:
+    raw_content: bytes
+    raw_content = await download_to_memory(content_file)
+    try:
+        response: dict = httpx.post(
+            STYLE_TRANSFER_API,
+            json={"data": [base64_encode(raw_content), base64_encode(raw_style)]},
+            timeout=STYLE_TRANSFER_TIMEOUT,
+        ).json()
+    except httpx.ReadTimeout:
+        LOGGER.error("Failed to fetch style transfer result")
+        return None
+    styled_img: bytes = base64_decode(response["data"][0][22:])
+    try:
+        np_image = cv2_image_from_byte_io(io.BytesIO(styled_img))
+        np_label: np.ndarray = cv2_image_from_byte_io(io.BytesIO(raw_artist))
+        np_image = insert_image(np_label, np_image, insertion_shape="circle")
+        byte_image: bytes = cv2_image_to_bytes(np_image)
+    except Exception as exc:
+        LOGGER.error(f"Unexpected Exception caught during image copyrighting: {exc}")
+        return None
+    return byte_image
+
+
 async def label_adding(label_file: telegram.File, image_file: telegram.File) -> bytes | None:
     raw_label: bytes
     raw_image: bytes
@@ -79,7 +129,7 @@ async def label_adding(label_file: telegram.File, image_file: telegram.File) -> 
         np_image = insert_image(np_label, np_image, insertion_shape="circle")
         byte_image: bytes = cv2_image_to_bytes(np_image)
     except Exception as exc:
-        LOGGER.error(f"Unexpected Exception caught: {exc}")
+        LOGGER.error(f"Unexpected Exception caught during image copyrighting: {exc}")
         return None
     return byte_image
 
@@ -121,20 +171,21 @@ async def estimate_price(update: telegram.Update, _: ContextTypes.DEFAULT_TYPE) 
         if user_photo := await user.get_profile_photos():
             latest_user_photo: telegram.PhotoSize = user_photo.photos[0][-1]
             loaded_user_photo: telegram.File = await latest_user_photo.get_file()
-            if labeled_image := await label_adding(loaded_user_photo, image):
-                labeled_image_price: float = prediction.price * (1 + np.random.randint(1, 100) / 1000)
+            artist_name, artist_pic, style_pic = random_artist_painting()
+            if artist_styled_image := await artist_style_transfer(image, style_pic, artist_pic):
+                artist_styled_prediction: models.Predict = await fetch_price(artist_styled_image)
                 await message.reply_photo(
-                    labeled_image,
-                    caption="Но с твоей личной подписью это будет уже {price:0.0f}$, не забывай ставить копирайт!".format(
-                        price=labeled_image_price
+                    artist_styled_image,
+                    caption="Мало кто знает, но {artist: artist_name} тоже вдохновлялся этим шедевром, ценник просто смешной - {price:0.0f}$".format(
+                        price=artist_styled_prediction.price,
+                        artist=artist_name,
                     ),
                 )
             if styled_photo := await style_transfer(loaded_user_photo, image):
-                # style_photo_prediction: models.Predict = await fetch_price(styled_photo)
-                styled_photo_price = labeled_image_price + np.random.randint(2000, 5000)
+                styled_photo_price = prediction.price + np.random.randint(5000, 10000)
                 await message.reply_photo(
                     styled_photo,
-                    caption="Мы можем пойти дальше и раскрыть твою индивидуальность на максимум! Всего за {price:0.0f}$!".format(
+                    caption="Ты униикальна(-ен) и неповторим(-а)! Но даже эта картина имеет цену {price:0.0f}$!".format(
                         price=styled_photo_price
                     ),
                 )
