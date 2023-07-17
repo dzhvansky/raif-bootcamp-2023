@@ -19,7 +19,7 @@ from painting_estimation.settings import settings
 
 LOGGER: logging.Logger = logging.getLogger(__name__)
 HTTP_CLIENT: httpx.AsyncClient = httpx.AsyncClient()
-STYLE_TRANSFER_API: str = "https://aravinds1811-neural-style-transfer.hf.space/run/predict"
+STYLE_TRANSFER_API: str = "https://hexii-neural-style-transfer.hf.space/api/predict"
 STYLE_TRANSFER_TIMEOUT: int = 180  # 3 minutes
 
 

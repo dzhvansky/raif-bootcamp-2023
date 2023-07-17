@@ -30,15 +30,17 @@ for BOT:
 
 To deploy manually:
 1. install flyctl: `brew install flyctl`
-1. run `fly deploy --config <fly.api.toml or fly.bot.toml>`
+2. create apps: `flyctl apps create velvet-wolves-art-expert-<api or bot> -t $(flyctl tokens create deploy)`
+3. set telegram token: `fly secrets set TELEGRAM_TOKEN=<your-token-here> -a velvet-wolves-art-expert-bot`
+4. run `fly deploy --config <fly.api.toml or fly.bot.toml>`
 
 or tag a commit with some version in format `v*.*.*` (for ex. `v1.0.1`) and let CI/CD do its work:
 1. `git tag v1.0.1`
-1. `git push --tags`
+2. `git push --tags`
 
 or force deployment manually:
 1. go to https://github.com/dzhvansky/raif-bootcamp-2023/actions/workflows/fly.yml
-1. Press "Run workflow" button and actually run it
+2. Press "Run workflow" button and actually run it
 
 
 # Load testing
