@@ -19,6 +19,7 @@ from painting_estimation.settings import settings
 
 LOGGER: logging.Logger = logging.getLogger(__name__)
 HTTP_CLIENT: httpx.AsyncClient = httpx.AsyncClient()
+# check API here: "https://huggingface.co/spaces/Hexii/Neural-Style-Transfer"
 STYLE_TRANSFER_API: str = "https://hexii-neural-style-transfer.hf.space/api/predict"
 STYLE_TRANSFER_TIMEOUT: int = 180  # 3 minutes
 
@@ -86,7 +87,7 @@ async def style_transfer(content_file: telegram.File, style_file: telegram.File)
     try:
         response: dict = httpx.post(
             STYLE_TRANSFER_API,
-            json={"data": [base64_encode(raw_content), base64_encode(raw_style)]},
+            json={"data": [base64_encode(raw_content), base64_encode(raw_style), 1.0, 1.0]},
             timeout=STYLE_TRANSFER_TIMEOUT,
         ).json()
     except httpx.ReadTimeout:
@@ -101,7 +102,14 @@ async def artist_style_transfer(content_file: telegram.File, raw_style: bytes, r
     try:
         response: dict = httpx.post(
             STYLE_TRANSFER_API,
-            json={"data": [base64_encode(raw_content), base64_encode(raw_style)]},
+            json={
+                "data": [
+                    base64_encode(raw_content),
+                    base64_encode(raw_style),
+                    np.random.uniform(low=0.0, high=2.0),
+                    np.random.uniform(low=1.0, high=5.0),
+                ]
+            },
             timeout=STYLE_TRANSFER_TIMEOUT,
         ).json()
     except httpx.ReadTimeout:
