@@ -87,7 +87,14 @@ async def style_transfer(content_file: telegram.File, style_file: telegram.File)
     try:
         response: dict = httpx.post(
             STYLE_TRANSFER_API,
-            json={"data": [base64_encode(raw_content), base64_encode(raw_style), 1.0, 1.0]},
+            json={
+                "data": [
+                    base64_encode(raw_content),
+                    base64_encode(raw_style),
+                    np.random.uniform(low=0.75, high=1.25),
+                    np.random.uniform(low=1.0, high=2.0),
+                ]
+            },
             timeout=STYLE_TRANSFER_TIMEOUT,
         ).json()
     except httpx.ReadTimeout:
@@ -106,8 +113,8 @@ async def artist_style_transfer(content_file: telegram.File, raw_style: bytes, r
                 "data": [
                     base64_encode(raw_content),
                     base64_encode(raw_style),
-                    np.random.uniform(low=0.0, high=2.0),
-                    np.random.uniform(low=1.0, high=5.0),
+                    np.random.uniform(low=0.5, high=1.5),
+                    np.random.uniform(low=1.0, high=3.0),
                 ]
             },
             timeout=STYLE_TRANSFER_TIMEOUT,

@@ -17,7 +17,7 @@ opencv-python = "*"
 pillow = "*"
 onnxruntime = "*"
 joblib = "*"
-lightgbm = "*"
+lightgbm = "<4.0"
 scikit-learn = "*"
 torch = {version = "*", optional = true }
 torchmetrics = {version = "*", optional = true }
